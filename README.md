@@ -18,12 +18,11 @@ Since TypeScript cannot handle type information for `.vue` imports, they are shi
 - auto import components
 - heroicons
 - tailwind
+- vueuse/head
+- vueuse
+- pinia
 
 ???
-- vueuse
-- vueuse/head
-- pinia
-- pwa
-- l18n
-- markdown
 - api auto import
+- pwa
+- markdown
