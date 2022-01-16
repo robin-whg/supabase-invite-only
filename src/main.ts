@@ -3,9 +3,9 @@ import App from "./App.vue";
 import { createHead } from "@vueuse/head";
 import { createPinia } from "pinia";
 import "./styles/main.css";
-import { createRouter, createWebHistory } from "vue-router";
-import { setupLayouts } from "virtual:generated-layouts";
-import generatedRoutes from "virtual:generated-pages";
+import { router } from "~/hooks/useRouter";
+import { supabase } from "./hooks/useSupabase";
+import { userSession } from "./hooks/useAuth";
 
 const app = createApp(App);
 
@@ -13,14 +13,11 @@ const head = createHead();
 
 const pinia = createPinia();
 
-const routes = setupLayouts(generatedRoutes);
-
-const router = createRouter({
-  history: createWebHistory(),
-  routes,
-});
-
 app.use(head);
 app.use(pinia);
 app.use(router);
 app.mount("#app");
+
+supabase.auth.onAuthStateChange((event, session) => {
+  userSession.value = session;
+});
