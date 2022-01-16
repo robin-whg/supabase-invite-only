@@ -1,28 +1,48 @@
-# Vue 3 + Typescript + Vite
+# Supabase Invite Only
 
-This template should help get you started developing with Vue 3 and Typescript in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+Invite-only example for Supabase made with Vue 3
 
-## Recommended IDE Setup
+## Steps
 
-- [VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=johnsoncodehk.volar)
+1. Go to `Authentication > Settings` and disable Signup.
+2. Go to `Authentication > Templates` and change `<a href="{{ .ConfirmationURL }}">` to `<a href="{{ .ConfirmationURL }}/set_password">` in invite user template.
+3. Initialize Client
 
-## Type Support For `.vue` Imports in TS
+```ts
+import { createClient } from "@supabase/supabase-js";
 
-Since TypeScript cannot handle type information for `.vue` imports, they are shimmed to be a generic Vue component type by default. In most cases this is fine if you don't really care about component prop types outside of templates. However, if you wish to get actual prop types in `.vue` imports (for example to get props validation when using manual `h(...)` calls), you can enable Volar's `.vue` type support plugin by running `Volar: Switch TS Plugin on/off` from VSCode command palette.
+export const supabase = createClient(
+  "supabase-url",
+  "public-anon-key"
+);
+```
 
-## Features/Plugins
+4. Listen to Session changes
 
-- typescript
-- file based routing
-- layouts
-- auto import components
-- heroicons
-- tailwind
-- vueuse/head
-- vueuse
-- pinia
+```ts 
+import { Session } from "@supabase/supabase-js";
 
-???
-- api auto import
-- pwa
-- markdown
+export const userSession = ref<Session | null>(null);
+
+supabase.auth.onAuthStateChange((event, session) => {
+  userSession.value = session;
+});
+```
+
+5. Set password on `/set_password` route
+
+```ts
+  const { user, error } = await supabase.auth.update({
+    password: password.value,
+  });
+```
+
+6. Create route guards and redirect to `/sign_in` if not authenticated (`requiresAuth`) needs to be set on routes
+
+```ts
+router.beforeEach((to, from, next) => {
+  const isAuthenticated = supabase.auth.user();
+  if (to.name !== "sign_in" && !isAuthenticated) next({ name: "sign_in" });
+  else next();
+});
+```
