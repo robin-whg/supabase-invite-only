@@ -5,6 +5,7 @@ import Pages from "vite-plugin-pages";
 import Layouts from "vite-plugin-vue-layouts";
 import IconsResolver from "unplugin-icons/resolver";
 import Components from "unplugin-vue-components/vite";
+import { HeadlessUiResolver } from "unplugin-vue-components/resolvers";
 import Icons from "unplugin-icons/vite";
 
 // https://vitejs.dev/config/
@@ -19,7 +20,7 @@ export default defineConfig({
     Pages(),
     Layouts(),
     Components({
-      resolvers: [IconsResolver()],
+      resolvers: [IconsResolver(), HeadlessUiResolver({})],
     }),
     Icons(),
   ],
