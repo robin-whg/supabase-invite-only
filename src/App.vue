@@ -4,7 +4,7 @@
 import { useHead } from "@vueuse/head";
 
 useHead({
-  title: "Vute Template",
+  title: "Vue Template",
   meta: [{ name: "description", content: "Template for Vue Projects" }],
 });
 </script>
